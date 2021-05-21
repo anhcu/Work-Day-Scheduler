@@ -1,90 +1,123 @@
-//save & text comment 
-// var saveButton = document.getElementById("save");
-// var comment = document.getElementById("text")
+// //date and time 
+var now = moment().format('MMMM Do YYYY, h:mm:a');
+document.getElementById("currentDay").innerHTML = now
 
-// comment.textContent= localStorage.getItem('comment') 
-// var textArea = localStorage.getItem('comment') 
-// console.log(textArea)
-
-//saveButton.addEventListener("click", () => {
-  //  console.log('work')
-    // console.log('comment',comment.value)
-//localStorage.setItem("comment", comment.value);
-//});
-
-// //date and time (nned to display)
-var date = new Date();
-var currentDay = date.toDateString();
-// var time = date.toLocaleTimeString();
-document.getElementById("currentDay").innerHTML = currentDay
-
-
-//document.ready allows for the methods within the scope of it - to be envoked once the 
-// page has fully loaded on the browser 
-$(document).ready (function(){ 
-// logic 
-//transitioning Vanilla JS logic to Jquery Logic
-//variables that will be used for Jquery logic
-//theTime will equate to the id of the parent ( currnt row)
-
-//TO add event listener to the buttons (all buttons)
-$(".save").click(function() {
-    var theTime =  $(this).parent().attr("id");
-var theContent =  $(this).siblings(".content").val();
-    console.log('working')
-  //grab the value along with the time assciate with the note 
- localStorage.setItem(theTime, theContent);
-});
-
-
-
-// content.textContent= localStorage.getItem('content') 
-// var textArea = localStorage.getItem('comment') 
-// console.log(textArea)
-
-//saveButton.addEventListener("click", () => {
-  //  console.log('work')
-    // console.log('comment',comment.value)
-//localStorage.setItem("comment", comment.value);
-
-
-
-
-//create a conditional method that will alter the DOM based on the current time
-// if the time has past - add the past class  and vice versa withthe present class
 function timeChanged () {
     //grab the current time of the user using moment CDN 
-  var theUsersCurrentTime = moment().hours();
-  console.log(theUsersCurrentTime)
+  var currentTime = moment().hours();
+  console.log(currentTime)
 
   //logic that will impact the hours one by one (using a DRY method)
   $(".row").each(function(){
      
-      //grab the id of the rows and the value
-      var theTimeRow = parseInt($(this).attr("id").split("-")[1])
+    //grab the id of the rows and the value
+    var tabID = parseInt($(this).attr("id"))
+//     var theTimeRow = parseInt($(this).attr("id").split("-")[1])
+//    console.log(parseInt)
 
-
-      //check the status
-if (theTimeRow < theUsersCurrentTime) {
-    // addClass is method by JQuery 
-    // the past styling will be added to the designated row
-    $(this).addClss("past");
-}
-else if (theTimeRow === theUsersCurrentTime){ 
-    $(this).removeClass("past");
-    $(this).addClass("present");
-}else
     $(this).removeClass("past");
     $(this).removeClass("present");
-    $(this).addClass("future");
-  })
-}
-//by placing this within the scope f document.ready() - the timeChanged function 
-//witll automatically execute once the page loads 
-timeChanged()
+    $(this).removeClass("future");
 
+    //check the status
+if (tabID < currentTime) {
+    $(this).addClass("past");
+}
+else if (tabID === currentTime){ 
+    $(this).addClass("present");
+}else
+    $(this).addClass("future");
+   })
+}
+
+function LoadFromLocalStorage(){
+    tabs.forEach(tab => {
+        const textArea = document.getElementById('txtArea' + tab.id)
+        var value = localStorage.getItem(tab.id) 
+        if(value != null){
+            textArea.innerText = value      
+        }
+      })  
+}
+
+function LoadTabs(){
+    tabs.forEach(tab => {
+        const parentDiv = document.getElementById('tabContainer')
+        const childDiv = document.createElement('div')
+        childDiv.id = tab.id;
+        childDiv.classList.add('row')
+
+        const labelDiv = document.createElement('div')
+        labelDiv.innerText = tab.value
+        labelDiv.classList.add('col-sm-1')
+        labelDiv.classList.add('hour')
+
+        const textArea = document.createElement('textarea')
+        textArea.id = 'txtArea' + tab.id
+        textArea.classList.add('col-sm-9')
+        textArea.classList.add('content') 
+
+        const button = document.createElement('button')
+        button.innerHTML  ='<i class="far fa-save"></i>'
+        button.classList.add('saveBtn')
+        button.classList.add('col-sm-2')
+        button.classList.add('save')
+
+        childDiv.appendChild(labelDiv)
+        childDiv.appendChild(textArea)
+        childDiv.appendChild(button)
+        parentDiv.appendChild(childDiv)
+      })
+}
+
+$(document).ready (function(){ 
+    LoadTabs();
+    timeChanged();
+    LoadFromLocalStorage();
+
+    $(".save").click(function() {
+        var theTime =  $(this).parent().attr("id");
+        var theContent =  $(this).siblings(".content").val();
+        localStorage.setItem(theTime, theContent);
+    });
 })
 
-
-
-
+const tabs = [
+    {
+    id: 9,
+    value: '9am'
+  },
+  {
+      id: 10,
+      value: '10am'
+  },
+  {
+      id: 11,
+      value: '11am'
+  },
+  {
+      id: 12,
+      value: '12pm'
+  },
+  {
+      id: 13,
+      value: '1pm'
+  },
+  {
+      id: 14,
+      value: '2pm'
+  },
+  {
+      id: 15,
+      value: '3pm'
+  },
+  {
+      id: 16,
+      value: '4pm'
+  },
+  {
+      id: 17,
+      value: '5pm'
+  }
+ 
+]

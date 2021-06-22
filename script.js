@@ -37,6 +37,7 @@ function LoadFromLocalStorage(){
         if(value != null){
             textArea.innerText = value      
         }
+        console.log('txtArea')
       })  
 }
 
